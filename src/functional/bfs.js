@@ -1,6 +1,7 @@
 import { getNodesInShortestPathOrder } from "../utils/node";
 
 function bfs(grid, startNode, finishNode) {
+    // console.log(grid)
   const unvisitedNodes = [startNode];
   const visitedNodesInOrder = [];
 
@@ -31,7 +32,7 @@ function bfs(grid, startNode, finishNode) {
 }
 
 function checkNeighbors(row, col, grid, unvisitedNodes) {
-  if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+  if (grid[row] !== undefined && grid[row][col] !== undefined) {
     unvisitedNodes.push(grid[row][col]);
   }
 }
@@ -103,4 +104,5 @@ const animate = (visitedNodesInOrder, nodesInShortestPathOrder) => {
   }
 };
 
+export {bfs}
 export default visualizeBfs;

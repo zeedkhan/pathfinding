@@ -8,7 +8,9 @@ import {
   getNewGridWithWallToggled,
   moveStart,
   moveFinish,
+  rd
 } from "../utils/grid";
+import visualizeDijkstra from "../functional/dijkstra";
 
 /* INIT WHEN ANOMYNOUS */
 const START_NODE_ROW = 0;
@@ -28,14 +30,14 @@ function Matrix() {
   const [startNode, setStartNode] = useState(false);
   const [finishNode, setFinishNode] = useState(false);
 
-  const [sizeRow, setSizeRow] = useState(25);
-  const [sizeCol, setSizeCol] = useState(25);
+  const [sizeRow, setSizeRow] = useState(48);
+  const [sizeCol, setSizeCol] = useState(50);
 
   const [grid, setGrid] = useState([]);
 
   const handleMouseDown = (row, col) => {
     setMouseIsPressed(true);
-    if (grid[row][col].isStart) {
+    if (grid[row] && grid[row][col].isStart) {
       setFinishNode(false);
       return setStartNode(true);
     } else if (grid[row][col].isFinish) {
@@ -83,8 +85,51 @@ function Matrix() {
 
   const handleSetArray = (sizeRow, sizeCol) => {
     const matrix = twoDimentionsArray(sizeRow, sizeCol, initPosition);
+
+    matrix.map((vertical) => {
+      vertical.map((node) => {
+
+        const htmlNode = document.getElementById(`node-${node.row}-${node.col}`)
+
+        if (!!htmlNode) {
+          htmlNode.classList.remove('node-shortest-path', 'node-visited', 'node-wall');
+          if (!!node && node.isStart) {
+            document.getElementById(`node-${node.row}-${node.col}`).classList.add('node-start')
+          } else if (node.isFinish) {
+            document.getElementById(`node-${node.row}-${node.col}`).classList.add('node-finish')
+          }
+        }
+
+      })
+    })
+
     setGrid(matrix);
   };
+
+  const clearPath = () => {
+    const newGrid = grid.slice()
+    newGrid.map((vertical) => {
+      vertical.map((node) => {
+        node.distance = Infinity
+        if (node.isVisited) {
+          node.isVisited = !node.isVisited
+        }
+        document
+          .getElementById(`node-${node.row}-${node.col}`)
+          .classList.remove('node-shortest-path', 'node-visited')
+        if (node.isStart) {
+          document
+            .getElementById(`node-${node.row}-${node.col}`)
+            .classList.add('node-start')
+        } else if (node.isFinish) {
+          document
+            .getElementById(`node-${node.row}-${node.col}`)
+            .classList.add('node-finish')
+        }
+      })
+    })
+    setGrid(newGrid)
+  }
 
   useEffect(() => {
     handleSetArray(sizeRow, sizeCol);
@@ -142,8 +187,8 @@ function Matrix() {
 
   return (
     <div>
-      <div className="flex flex-col items-center py-5">
-        <div className="mb-4 flex space-x-2 max-w-[150px]">
+      <div className="flex items-center justify-center py-5 space-x-4">
+        <div className="flex space-x-2 max-w-[150px] justify-center">
           <label
             className="w-full max-w-[55px] flex items-center text-gray-700 text-sm font-bold"
             for="input-row"
@@ -160,7 +205,7 @@ function Matrix() {
           />
         </div>
 
-        <div className="mb-4 flex space-x-2 max-w-[150px]">
+        <div className=" flex space-x-2 max-w-[150px]">
           <label
             className="w-full max-w-[55px] flex items-center text-gray-700 text-sm font-bold"
             for="input-column"
@@ -180,9 +225,26 @@ function Matrix() {
         <div className="flex space-x-4">
           <button
             className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+            onClick={() => clearPath()}
+          >
+            Clear path
+          </button>
+          <button
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
             onClick={() => handleSetArray(sizeRow, sizeCol)}
           >
             Generate Maze
+          </button>
+
+          <button
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+            onClick={() => {
+              handleSetArray(sizeRow, sizeCol);
+              const newGrid = rd(grid, 10);
+              setGrid(newGrid);
+            }}
+          >
+            Generate Walls
           </button>
 
           <button
@@ -197,12 +259,18 @@ function Matrix() {
           >
             bfs
           </button>
+          <button
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+            onClick={() => visualizeDijkstra(grid, initPosition)}
+          >
+            Dijkstra
+          </button>
         </div>
       </div>
 
       <hr />
 
-      <table className="w-full table">
+      <table className="w-full table shadow-sm">
         <tbody className="w-full">
           {grid?.map((row, rowIdx) => {
             return (

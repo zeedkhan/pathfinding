@@ -32,10 +32,12 @@ function dfs(grid, startNode, finishNode) {
       checkNeighbors(row, col - 1, grid, unvisitedNodes);
     }
   }
+
+  return visitedNodesInOrder;
 }
 
 function checkNeighbors(row, col, grid, unvisitedNodes) {
-  if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+  if (grid[row] !== undefined && grid[row][col] !== undefined) {
     unvisitedNodes.push(grid[row][col]);
   }
 }

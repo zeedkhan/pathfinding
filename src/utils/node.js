@@ -18,12 +18,12 @@ export const createNode = (row, col, initPosition, randomG) => {
       f: 0,
       h: 0,
     },
+    previousNode: null,
     // weight: {
     //     g: 0,
     //     f: 0,
     //     h: (startPos === false && finishPos === false ? randomG() : 0)
     // },
-    previousNode: null,
   };
 };
 

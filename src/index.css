@@ -24,10 +24,10 @@
 }
 
 .node {
-  width: 24px;
-  height: 24px;
-  outline: 1px solid rgb(175, 216, 248);
-  border: 1px solid rgb(175, 216, 248);
+  width: 20px;
+  height: 20px;
+  /* outline: 1px solid rgb(175, 216, 248); */
+  /* border: 1px solid rgb(175, 216, 248); */
 }
 
 .node-finish {
