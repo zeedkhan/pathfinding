@@ -1,4 +1,4 @@
-export const createNode = (row, col, initPosition, randomG) => {
+export const createNode = (row, col, initPosition) => {
   const { startRow, startCol, finishRow, finishCol } = initPosition;
 
   const startPos = row === startRow && col === startCol;
@@ -17,13 +17,18 @@ export const createNode = (row, col, initPosition, randomG) => {
       g: 0,
       f: 0,
       h: 0,
+      terrain: 0,
     },
+    isEditing: false,
+    /* 
+      terrainType  
+        0: path
+        1: water
+        2: mountain
+        3: wall
+    */
+    terrainType: 0,
     previousNode: null,
-    // weight: {
-    //     g: 0,
-    //     f: 0,
-    //     h: (startPos === false && finishPos === false ? randomG() : 0)
-    // },
   };
 };
 

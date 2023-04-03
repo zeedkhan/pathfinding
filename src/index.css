@@ -24,26 +24,46 @@
 }
 
 .node {
-  width: 20px;
-  height: 20px;
-  /* outline: 1px solid rgb(175, 216, 248); */
-  /* border: 1px solid rgb(175, 216, 248); */
+  width: 28px;
+  height: 28px;
+  outline: 1px solid rgb(175, 216, 248);
+  border: 1px solid rgb(175, 216, 248);
+}
+
+.node-wall {
+  background-color: rgb(12, 53, 71);
+}
+
+.node-water {
+  background-color: rgb(1, 75, 179);
+}
+
+.node-mountain {
+  background-color: rgb(121, 237, 117);
+}
+
+.node-mountain-200 {
+  background-color: rgb(44, 235, 37);
+}
+
+.node-mountain-300 {
+  background-color: rgb(7, 146, 2);
 }
 
 .node-finish {
-  background-color: red;
-  /* background-image: url(../../images/finish.png); */
-  /* background-size: 80%; */
-  /* background-repeat: no-repeat; */
-  /* background-position: center; */
+  /* background-color: red; */
+  background-image: url(../src/images/finish.png);
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .node-start {
-  background-color: green;
-  /* background-image: url(../../images/start.png); */
-  /* background-size: 80%;
+  /* background-color: rgb(246, 149, 23); */
+  background-image: url(../src/images/start.png);
+  background-size: 80%;
   background-repeat: no-repeat;
-  background-position: center; */
+  background-position: center;
 }
 
 .node-visited {
@@ -55,7 +75,7 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-  
+
 }
 
 @keyframes visitedAnimation {
@@ -78,10 +98,6 @@
     transform: scale(1);
     background-color: rgba(0, 190, 218, 0.75);
   }
-}
-
-.node-wall {
-  background-color: rgb(12, 53, 71);
 }
 
 /* Move Node */

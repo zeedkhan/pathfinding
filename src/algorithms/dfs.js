@@ -1,14 +1,19 @@
 import { getNodesInShortestPathOrder } from "../utils/node";
 
-function bfs(grid, startNode, finishNode) {
-    // console.log(grid)
+function dfs(grid, startNode, finishNode) {
+  // const visited = new Set();
+
   const unvisitedNodes = [startNode];
   const visitedNodesInOrder = [];
+  // const path = [];
 
   while (unvisitedNodes.length > 0) {
-    const current = unvisitedNodes.shift();
+    const current = unvisitedNodes.pop();
 
-    if (current.isWall) continue;
+    // isWall || terrainType === 1
+    if (current.isWall || current.terrainType === 1) {
+      continue;
+    };
 
     if (current === finishNode) {
       return visitedNodesInOrder;
@@ -20,14 +25,17 @@ function bfs(grid, startNode, finishNode) {
       visitedNodesInOrder.push(current);
       updateUnvisitedNeighbors(current, grid);
 
+      // path.push(current)
+
       const { row, col } = current;
 
-      checkNeighbors(row, col + 1, grid, unvisitedNodes);
       checkNeighbors(row + 1, col, grid, unvisitedNodes);
-      checkNeighbors(row, col - 1, grid, unvisitedNodes);
       checkNeighbors(row - 1, col, grid, unvisitedNodes);
+      checkNeighbors(row, col + 1, grid, unvisitedNodes);
+      checkNeighbors(row, col - 1, grid, unvisitedNodes);
     }
   }
+
   return visitedNodesInOrder;
 }
 
@@ -40,6 +48,7 @@ function checkNeighbors(row, col, grid, unvisitedNodes) {
 function updateUnvisitedNeighbors(node, grid) {
   const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
   for (const neighbor of unvisitedNeighbors) {
+    // //   neighbor.distance = node.distance + 1;
     neighbor.previousNode = node;
   }
 }
@@ -54,14 +63,14 @@ function getUnvisitedNeighbors(node, grid) {
   return neighbors.filter((neighbor) => !neighbor.isVisited);
 }
 
-function visualizeBfs(grid, initPosition) {
+function visualizeDfs(grid, initPosition) {
   const { startRow, startCol, finishRow, finishCol } = initPosition;
 
   const startNode = grid[startRow][startCol];
 
   const finishNode = grid[finishRow][finishCol];
 
-  const visitedNodesInOrder = bfs(grid, startNode, finishNode);
+  const visitedNodesInOrder = dfs(grid, startNode, finishNode);
 
   const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
 
@@ -80,15 +89,6 @@ const animateShortestPath = (nodesInShortestPathOrder) => {
 
 const animate = (visitedNodesInOrder, nodesInShortestPathOrder) => {
   for (let i = 0; i < visitedNodesInOrder.length; i++) {
-    /* 
-            At exit now
-        */
-
-    /* 
-            Find exit
-
-        */
-
     setTimeout(() => {
       const node = visitedNodesInOrder[i];
       document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -104,5 +104,4 @@ const animate = (visitedNodesInOrder, nodesInShortestPathOrder) => {
   }
 };
 
-export {bfs}
-export default visualizeBfs;
+export default visualizeDfs;

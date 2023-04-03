@@ -1,6 +1,3 @@
-import { bfs } from "../functional/bfs";
-import dijkstra from "../functional/dijkstra";
-
 const clearPrevMove = (grid, type) => {
   const newGrid = grid.slice();
 
@@ -9,33 +6,12 @@ const clearPrevMove = (grid, type) => {
   return newGrid;
 };
 
-const shuffle2DArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    for (let j = array[i].length - 1; j > 0; j--) {
-      const k = Math.floor(Math.random() * (i + 1));
-      const l = Math.floor(Math.random() * (j + 1));
-      [array[i][j], array[k][l]] = [array[k][l], array[i][j]];
-    }
-  }
-  return array;
-}
-
-const animateGenerateWalls = (htmlNodes) => {
-  const nodes = Array.from(htmlNodes);
-
-  shuffle2DArray(nodes).map((node, key) => {
-    setTimeout(() => {
-      node.classList.add("node-wall")
-    }, key * 20)
-  })
-
-}
-
 export const getNewGridWithWallToggled = (grid, row, col) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
   const newNode = {
     ...node,
+    terrainType: !node.isWall ? 0 : 3,
     isWall: !node.isWall,
   };
   newGrid[row][col] = newNode;
@@ -76,87 +52,6 @@ export const moveFinish = (grid, row, col) => {
 
   return newGrid;
 };
-
-
-export const generateWalls = (nodes, initPosition, shouldFindPath = true) => {
-
-  const { startRow, startCol, finishRow, finishCol } = initPosition;
-
-  const startNode = nodes[startRow][startCol];
-  const finishNode = nodes[finishRow][finishCol]
-
-  // Set all nodes to not be walls
-  const tempMatrix = nodes.slice();
-
-  const allWallsForAnimate = [];
-
-  // reset nodes attributes
-  for (const rowNodes of nodes) {
-    for (const node of rowNodes) {
-
-      const htmlNode = document.getElementById(`node-${node.row}-${node.col}`);
-
-      htmlNode.classList.remove('node-shortest-path', 'node-visited');
-
-      if (node.isStart) {
-        htmlNode.classList.add('node-start')
-      } else if (node.isFinish) {
-        htmlNode.classList.add('node-finish')
-      } else if (node.isWall) {
-        htmlNode.classList.remove('node-wall')
-      }
-
-
-      node.isVisited = false;
-      node.isWall = false;
-      node.isMove = false;
-      node.distance = Infinity;
-
-    }
-  }
-
-  // Generate walls
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = 0; j < nodes[0].length; j++) {
-      const node = nodes[i][j];
-      if (node === startNode || node === finishNode) {
-        continue;
-      }
-      if (Math.random() < 0.2) { // adjust probability as needed
-        const htmlNode = document.getElementById(`node-${i}-${j}`);
-        if (!!htmlNode) {
-          allWallsForAnimate.push(htmlNode);
-          node.isWall = true;
-        }
-      }
-    }
-  }
-
-  animateGenerateWalls(allWallsForAnimate)
-
-
-  // mock up using dij
-  if (shouldFindPath) {
-    const save = tempMatrix.slice();
-    const visitedNodesInOrder = dijkstra(save, startNode, finishNode);
-
-
-    const pathExists = visitedNodesInOrder.includes(finishNode);
-
-    if (!pathExists) {
-      // Regenerate walls
-      generateWalls(nodes, initPosition, shouldFindPath);
-    }
-  }
-
-  tempMatrix.map((i) => {
-    i.map(c => {
-      c.isVisited = false;
-    })
-  })
-
-  return tempMatrix;
-}
 
 //----------------------
 //   Recursive Division

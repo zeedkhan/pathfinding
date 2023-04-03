@@ -1,4 +1,5 @@
 import { getNodesInShortestPathOrder } from "../utils/node";
+import { getAllNodes } from "../utils/helper";
 
 function dijkstra(grid, startNode, finishNode) {
     const visitedNodesInOrder = [];
@@ -7,35 +8,28 @@ function dijkstra(grid, startNode, finishNode) {
 
     while (unvisitedNodes.length > 0) {
         sortNodesByDistance(unvisitedNodes);
-        const closestNode = unvisitedNodes.shift();
+        const current = unvisitedNodes.shift();
 
-        // If we encounter a wall, we skip it
-        if (closestNode.isWall) continue;
+        // isWall || terrainType === 1
+        if (current.isWall || current.terrainType === 1) {
+            continue;
+        };
 
         // If the closest node is at a distance of infinity,
         // we must be trapped and should stop.
-        if (closestNode.distance === Infinity) return visitedNodesInOrder;
+        if (current.distance === Infinity) return visitedNodesInOrder;
 
-        closestNode.isVisited = true;
-        visitedNodesInOrder.push(closestNode);
+        current.isVisited = true;
+        visitedNodesInOrder.push(current);
 
-        if (closestNode === finishNode) return visitedNodesInOrder;
+        if (current === finishNode) return visitedNodesInOrder;
 
-        updateUnvisitedNeighbors(closestNode, grid);
+        updateUnvisitedNeighbors(current, grid);
     }
 
     return visitedNodesInOrder;
 }
 
-function getAllNodes(grid) {
-    const nodes = [];
-    for (const row of grid) {
-        for (const node of row) {
-            nodes.push(node);
-        }
-    }
-    return nodes;
-}
 
 function sortNodesByDistance(unvisitedNodes) {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
